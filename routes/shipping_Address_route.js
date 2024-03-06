@@ -16,13 +16,6 @@ router.post('/addShipping-Address', protectedRoute, async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Check if the shipping address with the given mobilenumber already exists
-    const existingShipping = await ShippingModel.findOne({ postalcode });
-
-    if (existingShipping) {
-      return res.status(400).json({ error: 'Shipping address with the provided postalcode already exists' });
-    }
-
     const newShipping = new ShippingModel({
       fullname,
       mobilenumber,
@@ -49,6 +42,7 @@ router.post('/addShipping-Address', protectedRoute, async (req, res) => {
     res.status(500).json({ error: 'Failed to add shipping address to the database' });
   }
 });
+
 
 
 //...................................{  get Shipping-Addresses  }.....................................................
