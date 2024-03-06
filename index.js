@@ -10,7 +10,7 @@ const fileUpload = require('express-fileupload');
 
 // Set a port for your application
 const port = process.env.PORT || 5000;
-
+console.log(dotenv.parsed)
 // Connect to MongoDB using the provided URL
 mongoose.connect(MONGO_DB_URL);
 
