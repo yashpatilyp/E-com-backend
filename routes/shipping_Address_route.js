@@ -5,7 +5,6 @@ const protectedRoute = require('../middleware/protectedResource');
 
 //.......................................{ Add Shipping Addresses }.................................................
 
-
 router.post('/addShipping-Address', protectedRoute, async (req, res) => {
   try {
     const { fullname, mobilenumber, address, postalcode, city } = req.body;
@@ -14,6 +13,20 @@ router.post('/addShipping-Address', protectedRoute, async (req, res) => {
 
     if (!fullname || !mobilenumber || !address || !postalcode || !city) {
       return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Check if the shipping address already exists for the current user
+    const existingShipping = await ShippingModel.findOne({
+      fullname,
+      mobilenumber,
+      address,
+      postalcode,
+      city,
+      author: req.user._id,
+    });
+
+    if (existingShipping) {
+      return res.status(400).json({ error: 'Shipping address already exists for this user' });
     }
 
     const newShipping = new ShippingModel({
@@ -42,7 +55,6 @@ router.post('/addShipping-Address', protectedRoute, async (req, res) => {
     res.status(500).json({ error: 'Failed to add shipping address to the database' });
   }
 });
-
 
 
 //...................................{  get Shipping-Addresses  }.....................................................
