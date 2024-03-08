@@ -82,8 +82,16 @@ router.get('/products/:_id', async (req, res) => {
 
 //......................... delete product 
 
+
 router.delete('/products/:_id', async (req, res) => {
   try {
+    // Check if the user is an admin
+    const isAdmin = req.user && req.user.isAdmin;
+
+    if (isAdmin===true) {
+      return res.status(403).json({ error: 'Permission denied. Admin access required.' });
+    }
+
     const productId = req.params._id;
     const product = await Product.findByIdAndDelete(productId);
 
@@ -95,7 +103,8 @@ router.delete('/products/:_id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}); 
+});
+
 
 
 
