@@ -88,7 +88,7 @@ router.delete('/products/:_id', async (req, res) => {
     // Check if the user is an admin
     const isAdmin = req.user && req.user.isAdmin;
 
-    if (isAdmin===true) {
+    if (isAdmin===false) {
       return res.status(403).json({ error: 'Permission denied. Admin access required.' });
     }
 
@@ -106,7 +106,43 @@ router.delete('/products/:_id', async (req, res) => {
 });
 
 
+//................ update Product ..........................................................
 
+router.put('/products/:id', async (req, res) => {
+  try {
+    const { name, price, mrp, description, quantity, picture } = req.body;
+    const productId = req.params.id;
+
+    // Validate and sanitize user inputs here
+
+    if (!name || !price || !mrp || !description || !quantity) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    // Find the product by ID
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Update product fields
+    product.name = name;
+    product.price = price;
+    product.mrp = mrp;
+    product.description = description;
+    product.quantity = quantity;
+    product.picture = picture || product.picture; // Update the picture only if provided
+
+    // Save the updated product
+    const updatedProduct = await product.save();
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 
 

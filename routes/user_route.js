@@ -5,6 +5,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
 const protectedRoute = require ('../middleware/protectedResource');
+
 const UserModel = mongoose.model('UserModel');
 const router = express.Router();
 
@@ -49,6 +50,26 @@ router.post("/signup", async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 }); 
+//................................{get all user }.......................................................
+// Assuming your protectedRoute middleware sets user information in req.user
+
+router.get("/users", protectedRoute, async (req, res) => {
+    try {
+      // Check if the user is an admin
+      if (req.user.isAdmin===false) {
+        return res.status(403).json({ error: 'Permission denied. Admin access required.' });
+      }
+
+      // Fetch all users from the database
+      const allUsers = await UserModel.find({}, { password: 0 });
+  
+      res.status(200).json(allUsers);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 // .............................. {  Login  Api  } .................................................. 
 
@@ -181,5 +202,60 @@ router.put("/userinfo/update-password", protectedRoute, async (req, res) => {
         
     }
 });
+
+//.................................................................
+
+
+router.patch('/users/:id', protectedRoute, async (req, res) => {
+    try {
+      const { id } = req.params;  
+      const { isAdmin } = req.body;
+  
+      // Update the user's isAdmin status in the database
+      const updatedUser = await UserModel.findByIdAndUpdate(id, { isAdmin }, { new: true });
+  
+      // Check if the user exists
+      if (!updatedUser) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      res.json({ message: 'Admin status updated successfully', user: updatedUser });
+    } catch (error) {
+      console.error('Error updating admin status:', error);
+  
+      // Send an error response with a meaningful message
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+//...................................................................................................
+
+
+// Delete User by ID
+router.delete('/users/:_id', protectedRoute, async (req, res) => {
+    try {
+        const isAdmin = req.user && req.user.isAdmin;
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Permission denied. Admin access required.' });
+        }
+
+        const { _id } = req.params;
+
+        const userToDelete = await UserModel.findById(_id);
+
+        if (!userToDelete) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Use deleteOne to remove the user
+        await UserModel.deleteOne({ _id: userToDelete._id });
+
+        res.json({ message: 'User deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+  
 
 module.exports = router;
