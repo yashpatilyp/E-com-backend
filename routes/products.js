@@ -111,12 +111,12 @@ router.delete('/products/:_id', async (req, res) => {
 
 router.put('/products/:id', async (req, res) => {
   try {
-    const { name, price, mrp, description, quantity, picture } = req.body;
+    const { name, price, mrp, description, quantity, picture,size } = req.body;
     const productId = req.params.id;
 
     // Validate and sanitize user inputs here
 
-    if (!name || !price || !mrp || !description || !quantity) {
+    if (!name || !price || !mrp || !description || !quantity || !size) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -132,6 +132,7 @@ router.put('/products/:id', async (req, res) => {
     product.price = price;
     product.mrp = mrp;
     product.description = description;
+    product.size= size;
     product.quantity = quantity;
     product.picture = picture || product.picture; // Update the picture only if provided
 
