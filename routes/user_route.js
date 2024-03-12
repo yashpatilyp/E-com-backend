@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
+const nodemailer = require('nodemailer');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
@@ -257,5 +257,8 @@ router.delete('/users/:_id', protectedRoute, async (req, res) => {
     }
 });
   
+//....................................................................................................
+
+   
 
 module.exports = router;

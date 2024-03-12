@@ -1,11 +1,14 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
 const app = express();
 const dotenv=require('dotenv').config();
 const cors = require('cors');
+
 const mongoose = require('mongoose');
 const { MONGO_DB_URL } = require('./config');
 const { JWT_SECRET } = require('./config');
 const productRoutes = require('./routes/products');
+const paymentRoutes = require('./routes/payment_route');
 const fileUpload = require('express-fileupload');
 
 // Set a port for your application
@@ -48,7 +51,41 @@ app.use(require('./routes/cutomerReview'));
 app.use(require('./routes/shipping_Address_route'));
 
 app.use('/api', productRoutes);
+app.use('/api', paymentRoutes); 
+app.use('/api/orders', paymentRoutes);
 app.use('/', express.static('uploads'))
+
+
+
+// app.post('/api/create-checkout-session', async(req, res)=>{
+//     const {products} = req.body;
+// console.log(products)
+// const lineItems = products.map((product) => ({
+//     price_data: {
+//         currency: 'inr',
+//         product_data: {
+//             name: product.name
+//         },
+//         unit_amount: product.price * 100,
+//     },
+//     quantity: product.counter
+// }));
+
+// console.log(lineItems); 
+
+// const session = await stripe.checkout.sessions.create({
+//     payment_method_types: ['card'],
+//     line_items: lineItems,
+//     mode: 'payment',
+//     success_url: "http://localhost:3000/success",
+//     cancel_url: "http://localhost:3000/cancel",
+// });
+
+// res.json({ id: session.id });
+
+
+// })
+
 
 // Start the server and listen on the specified port
 app.listen (port , () => {

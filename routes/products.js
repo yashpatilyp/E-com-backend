@@ -24,11 +24,11 @@ router.post('/products', async(req, res) => {
       , { folder: 'product_images' });
     console.log(uploadResult);
 
-    const { name, price, mrp, description, quantity } = req.body;
+    const { name, price, mrp, description, quantity,size } = req.body;
 
     // Validate and sanitize user inputs here
 
-    if (!name || !price || !mrp || !description || !quantity) {
+    if (!name || !price || !mrp || !description || !quantity || !size) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -39,6 +39,7 @@ router.post('/products', async(req, res) => {
       description,
       quantity,
       picture: uploadResult.url,
+      size
     });
 
     const savedProduct = await newProduct.save();
