@@ -4,6 +4,7 @@ const router = express.Router();
 const stripe = require('stripe')('sk_test_51N7vdjSD3r9BRhLabKEqrJQkVRJadWmdFpdUX5k1agIJoWgFlgddM1xkjsD1w5AfEIqAlOlO2FbLJHyQIdvuJbuj001In21biE'); // Replace with your actual Stripe secret key
 const Order = require('../models/order_model');
 
+
 router.post('/create-checkout-session', async (req, res) => {
   const { products, user } = req.body;
   // console.log(products);
@@ -80,4 +81,25 @@ router.get('/get-order-by-payment-id/:paymentId', async (req, res) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   });
+
+
+
+  //.......................................... Fetch orders by user email..................................................................
+
+  
+router.get('/get-orders-by-user-email/:email', async (req, res) => {
+  try {
+    const userEmail = req.params.email;
+    const orders = await Order.find({ 'user.email': userEmail });
+    
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: 'No orders found for this user' });
+    }
+    
+    res.json(orders);
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
 module.exports = router;
