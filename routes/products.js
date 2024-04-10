@@ -1,8 +1,10 @@
+//imports 
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/product_model');
 
-import { v2 as cloudinary } from 'cloudinary';
+const cloudinary = require('cloudinary').v2;
+
 
 
 
@@ -53,7 +55,7 @@ router.post('/products', async(req, res) => {
 
 
 
-//....................................... API endpoint for getting all products
+//....................................... API endpoint for getting all products........................................
 
 router.get('/products', async (req, res) => {
   try {
@@ -64,7 +66,7 @@ router.get('/products', async (req, res) => {
   }
 });
 
-//.................................APi endpoint for getting one product
+//.................................APi endpoint for getting one product.....................................................
 
 router.get('/products/:_id', async (req, res) => {
   try {
@@ -81,7 +83,7 @@ router.get('/products/:_id', async (req, res) => {
   }
 });
 
-//......................... delete product 
+//......................... delete product........................................................................... 
 
 
 router.delete('/products/:_id', async (req, res) => {
