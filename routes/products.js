@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/product_model');
 
+import { v2 as cloudinary } from 'cloudinary';
 
-const cloudinary = require('cloudinary').v2;
 
 
 // Configure Cloudinary
@@ -145,6 +145,7 @@ router.put('/products/:id', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 
