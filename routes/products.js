@@ -30,7 +30,7 @@ router.post('/products', async(req, res) => {
 
     // Validate and sanitize user inputs here
 
-    if (!name || !price || !mrp || !description || !quantity || !size) {
+    if (!name || !price || !mrp || !description || !quantity) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 

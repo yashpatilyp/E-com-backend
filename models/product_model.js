@@ -35,7 +35,7 @@ const productSchema = new mongoose.Schema({
     // Size of the product (if applicable)
     size: {
         type: String,
-        required: true,
+       
     },
 }, { timestamps: true });
 
