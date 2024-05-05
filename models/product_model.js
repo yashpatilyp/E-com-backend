@@ -37,6 +37,10 @@ const productSchema = new mongoose.Schema({
         type: String,
        
     },
+    category: {
+        type: String,
+      
+    }
 }, { timestamps: true });
 
 // Create the Product model based on the schema
